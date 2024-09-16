@@ -22,6 +22,7 @@ public class main {
 					"3: Lis. Entrada por Placa \n" +
 					"4: Cad. Saída \n" +
 					"5: Del. Registro \n" +
+					"6: Sel. Registro\n" +
 					"9: Sair \n"
 					));
 					switch(opcao) {
@@ -39,6 +40,9 @@ public class main {
 						break;
 						case 5:
 							crudestacionamento.delete();
+						break;
+						case 6:
+							crudestacionamento.select();
 						break;
 						case 9:
 							System.exit(0);

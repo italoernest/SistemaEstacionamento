@@ -1,8 +1,12 @@
 package br.com.sistemaestacionamento.crud;
 
+import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -226,6 +230,73 @@ public class CrudEstacionamento {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void select() {
+		try {
+			//Abrir conexao
+			Connection conexao = ConnectionFactory.createConnection();
+			
+			//Importa a classe de transição de dados no sql
+			Estacionamento estacionamento = new Estacionamento();
+			
+			String sql = "select idestacione, placa from estacione;";
+			
+			PreparedStatement cmd = conexao.prepareStatement(sql);
+			
+			ResultSet resultado = cmd.executeQuery();
+			
+			Map<String, Integer> mapaEstaciones = new HashMap<>();
+			ArrayList<String> listaPlacas = new ArrayList<>();
+			
+			while(resultado.next()) {
+				int placaId = resultado.getInt("idestacione");
+				String placa = resultado.getString("placa");
+				
+				listaPlacas.add(placa);
+				mapaEstaciones.put(placa, placaId);
+			}
+			
+			String[] placasArray = listaPlacas.toArray(new String[0]);
+			
+			String placaSelecionada = (String) JOptionPane.showInputDialog(
+					null,
+					"Selecione a placa: ",
+					"Seleção de Placa",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					placasArray,
+					placasArray[0]
+			);
+			
+			if(placaSelecionada != null) {
+				int placaIdSelecionada  = mapaEstaciones.get(placaSelecionada);
+				
+				JOptionPane.showMessageDialog(null, 
+						"Você selecionou a placa: " + 
+						placaSelecionada + 
+						"\nID da placa: " + placaIdSelecionada);
+				
+				int idPlaca = 2;
+				String sqlselect = "select * from estacione where idestacione = ?";
+				
+				//Criando um comando para passar o SQL
+				PreparedStatement cmd1 = conexao.prepareStatement(sqlselect);
+				cmd1.setInt(1, idPlaca);
+				
+				ResultSet resultado1 = cmd1.executeQuery();
+				while(resultado1.next()) {
+					System.out.println(resultado1.getInt("idestacione"));
+					System.out.println(resultado1.getString("placa"));
+				}
+				
+			}else {
+				JOptionPane.showMessageDialog(null, "Nenhuma placa selecionada");
+			}
+			
+		} catch (Exception e) {
+			
 		}
 	}
 }
